@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Flow | テキスト整形ツール</title>
+  <meta
+    name="description"
+    content="Static text formatting tool for GitHub Pages."
+  >
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">GitHub Pages Ready</p>
+        <h1>Text Flow</h1>
+        <p class="hero-lead">
+          Stack text operations at the top, manage order in the middle, and compare before / after in real time below.
+        </p>
+      </div>
+      <div class="hero-note">
+        <p>カテゴリ</p>
+        <ul>
+          <li>削除系</li>
+          <li>置換系</li>
+          <li>変換系</li>
+          <li>正規表現系</li>
+        </ul>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <section class="panel composer-panel" aria-labelledby="composer-title">
+        <div class="panel-head">
+          <div>
+            <p class="section-kicker">Step 1</p>
+            <h2 id="composer-title">処理を追加</h2>
+          </div>
+          <p class="panel-caption">追加した処理は下のスタックで順番を変えられます。</p>
+        </div>
+
+        <form id="composerForm" class="composer-form">
+          <label class="field">
+            <span class="field-label">カテゴリ</span>
+            <select id="categorySelect" name="category"></select>
+          </label>
+
+          <label class="field">
+            <span class="field-label">処理</span>
+            <select id="operationSelect" name="operation"></select>
+          </label>
+
+          <div id="dynamicFields" class="dynamic-fields" aria-live="polite"></div>
+
+          <div class="composer-actions">
+            <button type="submit" class="primary-button">スタックに追加</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel stack-panel" aria-labelledby="stack-title">
+        <div class="panel-head">
+          <div>
+            <p class="section-kicker">Step 2</p>
+            <h2 id="stack-title">処理スタック</h2>
+          </div>
+          <button type="button" id="clearStackButton" class="ghost-button">スタックを空にする</button>
+        </div>
+
+        <div class="stack-summary">
+          <p id="stackMeta">0 個の処理</p>
+          <p id="errorMeta" class="error-meta" hidden>エラーはありません。</p>
+        </div>
+
+        <ol id="stackList" class="stack-list" aria-live="polite"></ol>
+      </section>
+
+      <section class="panel preview-panel" aria-labelledby="preview-title">
+        <div class="panel-head">
+          <div>
+            <p class="section-kicker">Step 3</p>
+            <h2 id="preview-title">before / after</h2>
+          </div>
+          <div class="panel-actions">
+            <button type="button" id="copyButton" class="primary-button">after をコピー</button>
+            <button type="button" id="clearInputButton" class="ghost-button">before を消去</button>
+          </div>
+        </div>
+
+        <div class="editor-grid">
+          <section class="editor-panel">
+            <div class="editor-head">
+              <h3>before</h3>
+              <p id="beforeStats">0 chars / 0 lines</p>
+            </div>
+            <label class="sr-only" for="beforeText">before</label>
+            <textarea
+              id="beforeText"
+              class="editor"
+              placeholder="Type source text here. The result updates immediately."
+            ></textarea>
+          </section>
+
+          <section class="editor-panel">
+            <div class="editor-head">
+              <h3>after</h3>
+              <p id="afterStats">0 chars / 0 lines</p>
+            </div>
+            <label class="sr-only" for="afterText">after</label>
+            <textarea
+              id="afterText"
+              class="editor readonly-editor"
+              readonly
+              aria-readonly="true"
+              placeholder="Output appears here."
+            ></textarea>
+            <p id="copyFeedback" class="copy-feedback" aria-live="polite"></p>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
