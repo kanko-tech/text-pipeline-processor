@@ -3,18 +3,18 @@
 Text Flow は、ブラウザだけで動く静的なテキスト整形ツールです。  
 `HTML / CSS / JavaScript` だけで構成しており、ビルドや外部ライブラリは不要です。
 
-ソースファイルは `src/` 配下にあります。
+ソースファイルはリポジトリ直下にあります。
 
 ## ファイル構成
 
 ```text
 .
-├─ src/
-│  ├─ index.html
-│  ├─ style.css
-│  └─ script.js
+├─ index.html
+├─ style.css
+├─ script.js
 ├─ .editorconfig
 ├─ .gitattributes
+├─ LICENSE
 └─ README.md
 ```
 
@@ -57,4 +57,4 @@ Text Flow は、ブラウザだけで動く静的なテキスト整形ツール�
 
 ## ローカル確認
 
-`src/index.html` をブラウザで開くだけで動作確認できます。
+`index.html` をブラウザで開くだけで動作確認できます。
