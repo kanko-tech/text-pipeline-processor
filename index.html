@@ -8,26 +8,25 @@
     name="description"
     content="Static text formatting tool for GitHub Pages."
   >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="page-shell">
     <header class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">GitHub Pages Ready</p>
-        <h1>Text Chain</h1>
-        <p class="hero-lead">
-          Stack text operations at the top, manage order in the middle, and compare before / after in real time below.
-        </p>
+      <div class="position-strip" aria-label="Page position">
+        <span class="position-chip">Tool Box</span>
+        <span class="position-chip current">text-chain</span>
       </div>
-      <div class="hero-note">
-        <p>カテゴリ</p>
-        <ul>
-          <li>削除系</li>
-          <li>置換系</li>
-          <li>変換系</li>
-          <li>正規表現系</li>
-        </ul>
+
+      <div class="hero-layout">
+        <div class="hero-copy">
+          <p class="eyebrow">REPOSITORY</p>
+          <h1>Text Chain</h1>
+          <p class="hero-lead">テキスト処理を積み重ねて、before / after をその場で比較できるブラウザ完結型の整形ツールです。</p>
+        </div>
       </div>
     </header>
 
@@ -122,6 +121,16 @@
       </section>
     </main>
   </div>
+
+  <footer class="site-footer">
+    <div class="footer-link-block">
+      <div class="inline-link-list">
+        <a href="https://github.com/kanko-tech/text-chain" target="_blank" rel="noreferrer">GitHub<small>text-chain のリポジトリ</small></a>
+      </div>
+    </div>
+    <p class="footer-title"><strong>kanko-techのツールボックス</strong></p>
+    <p>Copyright &copy; 2026 kanko-tech All Rights Reserved.</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>

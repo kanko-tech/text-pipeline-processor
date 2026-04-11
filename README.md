@@ -1,22 +1,10 @@
 # Text Chain
 
-Text Chain は、ブラウザだけで動く静的なテキスト整形ツールです。  
-`HTML / CSS / JavaScript` だけで構成しており、ビルドや外部ライブラリは不要です。
+Text Chain は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
 
-ソースファイルはリポジトリ直下にあります。
+## Page
 
-## ファイル構成
-
-```text
-.
-├─ index.html
-├─ style.css
-├─ script.js
-├─ .editorconfig
-├─ .gitattributes
-├─ LICENSE
-└─ README.md
-```
+- [Text Chain Page](https://kanko-tech.github.io/text-chain/)
 
 ## できること
 
@@ -54,7 +42,3 @@ Text Chain は、ブラウザだけで動く静的なテキスト整形ツール
 
 - 正規表現置換
 - 正規表現で削除
-
-## ローカル確認
-
-`index.html` をブラウザで開くだけで動作確認できます。
