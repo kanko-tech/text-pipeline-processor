@@ -114,8 +114,10 @@ pre {
   color: var(--muted);
   font-size: 0.86rem;
   font-weight: 700;
+  text-decoration: none;
   overflow: hidden;
   clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%, 8px 50%);
+  transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, color 180ms ease;
 }
 
 .position-chip::after {
@@ -139,6 +141,20 @@ pre {
 .position-chip.current {
   background: linear-gradient(135deg, #214f3f, #2d7f61);
   color: #fcfff8;
+  filter:
+    drop-shadow(0 1px 0 rgba(252, 255, 248, 0.16))
+    drop-shadow(0 -1px 0 rgba(252, 255, 248, 0.16))
+    drop-shadow(1px 0 0 rgba(252, 255, 248, 0.2));
+}
+
+.position-chip.current::after {
+  border-top-color: rgba(252, 255, 248, 0.22);
+  border-right-color: rgba(252, 255, 248, 0.22);
+  border-bottom-color: rgba(252, 255, 248, 0.22);
+}
+
+.position-chip:hover {
+  transform: translateY(-1px);
 }
 
 .hero-layout {
@@ -166,6 +182,14 @@ pre {
   font-size: clamp(2.8rem, 5vw, 4.9rem);
   line-height: 0.92;
   letter-spacing: -0.05em;
+}
+
+.hero-subline {
+  margin: 0;
+  color: var(--accent-strong);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .hero-lead {
