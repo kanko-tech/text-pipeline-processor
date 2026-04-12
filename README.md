@@ -1,10 +1,10 @@
-# Text Chain
+# Text Processing Pipeline
 
-Text Chain は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
+Text Processing Pipeline は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
 
 ## Page
 
-- [Text Chain Page](https://kanko-tech.github.io/text-chain/)
+- [Text Processing Pipeline Page](https://kanko-tech.github.io/text-processing-pipeline/)
 
 ## できること
 
