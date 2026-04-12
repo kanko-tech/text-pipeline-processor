@@ -26,96 +26,96 @@
           <p class="eyebrow">WEB TOOL</p>
           <h1>TPP-web</h1>
           <p class="hero-subline">Text Pipeline Processing Web</p>
-          <p class="hero-lead">任意のテキスト処理を順番に適用し、before / after をその場で確認できるブラウザ完結型のテキスト整形ツールです。</p>
+          <p class="hero-lead">任意のテキスト処理をスタックに追加した順に適用し、処理結果をその場で確認できます。</p>
         </div>
       </div>
     </header>
 
     <main class="workspace">
-      <section class="panel composer-panel" aria-labelledby="composer-title">
-        <div class="panel-head">
-          <div>
-            <p class="section-kicker">Step 1</p>
-            <h2 id="composer-title">処理を追加</h2>
+      <div class="workflow-column">
+        <section class="panel composer-panel" aria-labelledby="composer-title">
+          <div class="panel-head">
+            <h2 id="composer-title">処理の追加</h2>
           </div>
-          <p class="panel-caption">追加した処理は下のスタックで順番を変えられます。</p>
-        </div>
+          <p class="panel-caption">処理を選択して下のスタックに追加しましょう。</p>
 
-        <form id="composerForm" class="composer-form">
-          <label class="field">
-            <span class="field-label">カテゴリ</span>
-            <select id="categorySelect" name="category"></select>
-          </label>
+          <form id="composerForm" class="composer-form">
+            <label class="field">
+              <span class="field-label">カテゴリ</span>
+              <select id="categorySelect" name="category"></select>
+            </label>
 
-          <label class="field">
-            <span class="field-label">処理</span>
-            <select id="operationSelect" name="operation"></select>
-          </label>
+            <label class="field">
+              <span class="field-label">処理</span>
+              <select id="operationSelect" name="operation"></select>
+            </label>
 
-          <div id="dynamicFields" class="dynamic-fields" aria-live="polite"></div>
+            <div id="dynamicFields" class="dynamic-fields" aria-live="polite"></div>
 
-          <div class="composer-actions">
-            <button type="submit" class="primary-button">スタックに追加</button>
-          </div>
-        </form>
-      </section>
+            <div class="composer-actions">
+              <button type="submit" class="primary-button">スタックに追加</button>
+            </div>
+          </form>
+        </section>
 
-      <section class="panel stack-panel" aria-labelledby="stack-title">
-        <div class="panel-head">
-          <div>
-            <p class="section-kicker">Step 2</p>
+        <section class="panel stack-panel" aria-labelledby="stack-title">
+          <div class="panel-head">
             <h2 id="stack-title">処理スタック</h2>
           </div>
-          <button type="button" id="clearStackButton" class="ghost-button">スタックを空にする</button>
-        </div>
+          <div class="stack-summary">
+            <p id="stackMeta">0 個の処理</p>
+            <p id="errorMeta" class="error-meta" hidden>エラーはありません。</p>
+          </div>
 
-        <div class="stack-summary">
-          <p id="stackMeta">0 個の処理</p>
-          <p id="errorMeta" class="error-meta" hidden>エラーはありません。</p>
-        </div>
+          <ol id="stackList" class="stack-list" aria-live="polite"></ol>
+          <div class="stack-toolbar">
+            <button type="button" id="clearStackButton" class="ghost-button">スタックを空にする</button>
+          </div>
+        </section>
+      </div>
 
-        <ol id="stackList" class="stack-list" aria-live="polite"></ol>
-      </section>
+      <div class="workspace-resizer" id="workspaceResizer" aria-hidden="true"></div>
 
-      <section class="panel preview-panel" aria-labelledby="preview-title">
+      <section class="panel preview-panel io-column" aria-labelledby="preview-title">
         <div class="panel-head">
-          <div>
-            <p class="section-kicker">Step 3</p>
-            <h2 id="preview-title">before / after</h2>
-          </div>
-          <div class="panel-actions">
-            <button type="button" id="copyButton" class="primary-button">after をコピー</button>
-            <button type="button" id="clearInputButton" class="ghost-button">before を消去</button>
-          </div>
+          <h2 id="preview-title">テキスト入出力</h2>
+          <button type="button" id="layoutToggleButton" class="ghost-button">左右表示に切替</button>
         </div>
 
         <div class="editor-grid">
           <section class="editor-panel">
             <div class="editor-head">
-              <h3>before</h3>
-              <p id="beforeStats">0 chars / 0 lines</p>
+              <div>
+                <h3>before</h3>
+                <p id="beforeStats">0 chars / 0 lines</p>
+              </div>
+              <button type="button" id="clearInputButton" class="ghost-button">クリア</button>
             </div>
             <label class="sr-only" for="beforeText">before</label>
             <textarea
               id="beforeText"
               class="editor"
-              placeholder="Type source text here. The result updates immediately."
+              placeholder="ここに元のテキストを入力してください"
             ></textarea>
           </section>
 
           <section class="editor-panel">
             <div class="editor-head">
-              <h3>after</h3>
-              <p id="afterStats">0 chars / 0 lines</p>
+              <div>
+                <h3>after</h3>
+                <p id="afterStats">0 chars / 0 lines</p>
+              </div>
+              <button type="button" id="copyButton" class="primary-button">コピー</button>
             </div>
             <label class="sr-only" for="afterText">after</label>
-            <textarea
+            <div
               id="afterText"
-              class="editor readonly-editor"
-              readonly
+              class="editor readonly-editor output-display is-empty"
+              role="textbox"
               aria-readonly="true"
-              placeholder="Output appears here."
-            ></textarea>
+              tabindex="0"
+              data-placeholder="処理後のテキストがここに表示されます"
+            ></div>
             <p id="copyFeedback" class="copy-feedback" aria-live="polite"></p>
           </section>
         </div>

@@ -3,7 +3,7 @@
     delete: "削除系",
     replace: "置換系",
     convert: "変換系",
-    regex: "正規表現系",
+    regex: "正規表現",
   };
 
   const OPERATIONS = {
@@ -29,7 +29,7 @@
             name: "target",
             label: "削除する文字列",
             input: "text",
-            placeholder: "ex: foo",
+            placeholder: "例：foo",
             defaultValue: "",
           },
           {
@@ -73,14 +73,14 @@
             name: "find",
             label: "検索文字列",
             input: "text",
-            placeholder: "ex: foo",
+            placeholder: "例：foo",
             defaultValue: "",
           },
           {
             name: "replaceWith",
             label: "置換後",
             input: "text",
-            placeholder: "ex: bar",
+            placeholder: "例：bar",
             defaultValue: "",
           },
           {
@@ -110,7 +110,7 @@
             name: "replaceWith",
             label: "置換後",
             input: "text",
-            placeholder: "ex: /",
+            placeholder: "例：/",
             defaultValue: "",
             span: 2,
           },
@@ -166,52 +166,97 @@
     ],
     regex: [
       {
-        type: "regexReplace",
-        label: "正規表現置換",
-        description: "キャプチャやフラグに対応した置換です。",
+        type: "regexSearch",
+        label: "検索",
+        description: "一致した文字を処理結果内で見つけやすく表示します。",
         fields: [
           {
             name: "pattern",
             label: "パターン",
             input: "text",
-            placeholder: "ex: \\d+",
+            placeholder: "例：\\d+",
             defaultValue: "",
+            span: 2,
           },
           {
             name: "flags",
-            label: "フラグ",
-            input: "text",
-            placeholder: "ex: gi",
-            defaultValue: "g",
-          },
-          {
-            name: "replaceWith",
-            label: "置換後",
-            input: "text",
-            placeholder: "ex: [number]",
-            defaultValue: "",
+            label: "オプション",
+            input: "multi-checkbox",
+            defaultValue: ["g"],
             span: 2,
+            options: [
+              { value: "g", label: "g: 文中で見つかった一致箇所をすべて探す" },
+              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
+              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
+              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
+              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
+            ],
           },
         ],
       },
       {
         type: "regexRemove",
-        label: "正規表現で削除",
+        label: "削除",
         description: "一致した部分を削除します。",
         fields: [
           {
             name: "pattern",
             label: "パターン",
             input: "text",
-            placeholder: "ex: <[^>]+>",
+            placeholder: "例：<[^>]+>",
             defaultValue: "",
+            span: 2,
           },
           {
             name: "flags",
-            label: "フラグ",
+            label: "オプション",
+            input: "multi-checkbox",
+            defaultValue: ["g"],
+            span: 2,
+            options: [
+              { value: "g", label: "g: 文中で見つかったすべての一致箇所を削除する" },
+              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
+              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
+              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
+              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
+            ],
+          },
+        ],
+      },
+      {
+        type: "regexReplace",
+        label: "置換",
+        description: "キャプチャやオプションに対応した置換です。",
+        fields: [
+          {
+            name: "pattern",
+            label: "パターン",
             input: "text",
-            placeholder: "ex: g",
-            defaultValue: "g",
+            placeholder: "例：\\d+",
+            defaultValue: "",
+            span: 2,
+          },
+          {
+            name: "replaceWith",
+            label: "置換後",
+            input: "text",
+            placeholder: "例：[number]",
+            defaultValue: "",
+            span: 2,
+          },
+          {
+            name: "flags",
+            label: "オプション",
+            input: "multi-checkbox",
+            defaultValue: ["g"],
+            span: 2,
+            options: [
+              { value: "g", label: "g: 文中で見つかったすべての一致箇所を置換する" },
+              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
+              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
+              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
+              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
+            ],
           },
         ],
       },
@@ -260,6 +305,7 @@
   function runOperations(text, operations) {
     let output = text;
     const errors = {};
+    let highlights = [];
 
     operations.forEach((operation) => {
       if (!operation.enabled) {
@@ -267,13 +313,19 @@
       }
 
       try {
+        if (operation.type === "regexSearch") {
+          highlights = collectRegexHighlights(output, operation.values || {});
+          return;
+        }
+
         output = applyOperation(output, operation);
+        highlights = [];
       } catch (error) {
         errors[operation.id] = error instanceof Error ? error.message : String(error);
       }
     });
 
-    return { output, errors };
+    return { output, errors, highlights };
   }
 
   function replacePlainText(text, find, replaceWith, mode, caseSensitive) {
@@ -341,6 +393,8 @@
     const values = operation.values || {};
 
     switch (operation.type) {
+      case "regexSearch":
+        return `/${values.pattern || ""}/${values.flags || ""} に一致する部分を強調表示`;
       case "removeText":
         return `${safePreview(values.target)} を削除 / ${values.mode === "first" ? "最初だけ" : "すべて"} / ${values.caseSensitive ? "大小区別あり" : "大小区別なし"}`;
       case "simpleReplace":
@@ -356,6 +410,33 @@
       default:
         return operation.description;
     }
+  }
+
+  function collectRegexHighlights(text, values) {
+    const regex = createRegExp(values.pattern, ensureGlobalFlags(values.flags));
+    const matches = [];
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      const matchText = match[0] || "";
+      const start = match.index;
+      const end = start + matchText.length;
+
+      if (end > start) {
+        matches.push({ start, end });
+      }
+
+      if (matchText.length === 0) {
+        regex.lastIndex += 1;
+      }
+    }
+
+    return matches;
+  }
+
+  function ensureGlobalFlags(flags) {
+    const source = flags || "";
+    return source.includes("g") ? source : `g${source}`;
   }
 
   function safePreview(value) {

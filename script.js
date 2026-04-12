@@ -3,6 +3,9 @@ const { CATEGORY_LABELS, OPERATIONS, formatStats, runOperations, summarizeOperat
 const state = {
   operations: [],
   errors: {},
+  editorLayout: "vertical",
+  leftWidthPercent: 33,
+  outputText: "",
 };
 
 const refs = {
@@ -21,6 +24,11 @@ const refs = {
   copyFeedback: document.getElementById("copyFeedback"),
   clearStackButton: document.getElementById("clearStackButton"),
   clearInputButton: document.getElementById("clearInputButton"),
+  layoutToggleButton: document.getElementById("layoutToggleButton"),
+  previewPanel: document.querySelector(".preview-panel"),
+  workspace: document.querySelector(".workspace"),
+  workflowColumn: document.querySelector(".workflow-column"),
+  workspaceResizer: document.getElementById("workspaceResizer"),
 };
 
 init();
@@ -30,6 +38,8 @@ function init() {
   syncOperationSelect();
   renderDynamicFields();
   bindEvents();
+  applyEditorLayout();
+  applyWorkspaceWidth();
   renderStack();
   recompute();
 }
@@ -56,7 +66,10 @@ function bindEvents() {
   });
 
   refs.beforeText.addEventListener("input", recompute);
+  refs.afterText.addEventListener("click", selectAfterText);
+  refs.afterText.addEventListener("focus", selectAfterText);
   refs.copyButton.addEventListener("click", copyAfterText);
+  refs.layoutToggleButton.addEventListener("click", toggleEditorLayout);
 
   refs.clearStackButton.addEventListener("click", () => {
     state.operations = [];
@@ -69,6 +82,10 @@ function bindEvents() {
     refs.beforeText.value = "";
     recompute();
   });
+
+  if (refs.workspaceResizer) {
+    refs.workspaceResizer.addEventListener("pointerdown", startWorkspaceResize);
+  }
 }
 
 function populateCategorySelect() {
@@ -108,6 +125,7 @@ function renderDynamicFields() {
   }
 
   refs.dynamicFields.innerHTML = definition.fields.map(renderField).join("");
+  refs.dynamicFields.dataset.category = refs.categorySelect.value || "";
 }
 
 function renderField(field) {
@@ -129,6 +147,35 @@ function renderField(field) {
           <span>${label}</span>
         </span>
       </label>
+    `;
+  }
+
+  if (field.input === "multi-checkbox") {
+    const defaultValues = Array.isArray(field.defaultValue) ? field.defaultValue : [];
+    return `
+      <fieldset class="${fieldClass}">
+        <legend class="field-label">${label}</legend>
+        <div class="field-checkbox-group">
+          ${field.options
+            .map((option, index) => {
+              const optionId = `${fieldId}-${index}`;
+              const checked = defaultValues.includes(option.value) ? "checked" : "";
+              return `
+                <label class="field-checkbox option-checkbox" for="${optionId}">
+                  <input
+                    id="${optionId}"
+                    type="checkbox"
+                    name="${field.name}"
+                    value="${escapeAttribute(option.value)}"
+                    ${checked}
+                  >
+                  <span>${escapeHtml(option.label)}</span>
+                </label>
+              `;
+            })
+            .join("")}
+        </div>
+      </fieldset>
     `;
   }
 
@@ -202,21 +249,36 @@ function collectFieldValues(fields) {
   const values = {};
 
   fields.forEach((field) => {
-    const input = refs.dynamicFields.querySelector(`[name="${field.name}"]`);
-    if (!input) {
-      return;
-    }
-
     if (field.input === "checkbox") {
+      const input = refs.dynamicFields.querySelector(`[name="${field.name}"]`);
+      if (!input) {
+        return;
+      }
       values[field.name] = input.checked;
       return;
     }
 
+    if (field.input === "multi-checkbox") {
+      const checkedInputs = refs.dynamicFields.querySelectorAll(`[name="${field.name}"]:checked`);
+      values[field.name] = Array.from(checkedInputs)
+        .map((input) => input.value)
+        .join("");
+      return;
+    }
+
     if (field.input === "number") {
+      const input = refs.dynamicFields.querySelector(`[name="${field.name}"]`);
+      if (!input) {
+        return;
+      }
       values[field.name] = Number(input.value);
       return;
     }
 
+    const input = refs.dynamicFields.querySelector(`[name="${field.name}"]`);
+    if (!input) {
+      return;
+    }
     values[field.name] = input.value;
   });
 
@@ -263,8 +325,7 @@ function renderStack() {
   if (!state.operations.length) {
     refs.stackList.innerHTML = `
       <li class="empty-state">
-        <strong>まだ処理がありません。</strong>
-        <p>上のフォームから処理を追加すると、ここに順番つきで表示されます。</p>
+        <p>ここに追加した処理が上から順に適用されます。</p>
       </li>
     `;
     return;
@@ -283,20 +344,19 @@ function renderStackItem(operation, index) {
     .filter(Boolean)
     .join(" ");
 
-  const toggleLabel = operation.enabled ? "無効化" : "有効化";
+  const toggleLabel = operation.enabled ? "有効" : "無効";
 
   return `
     <li class="${itemClassName}">
       <div class="stack-item-top">
         <span class="category-badge">${escapeHtml(CATEGORY_LABELS[operation.category])}</span>
-        <span class="status-badge">${operation.enabled ? "ON" : "OFF"}</span>
+        <button type="button" class="chip-button ${operation.enabled ? "is-active" : ""}" data-action="toggle" data-id="${operation.id}">${toggleLabel}</button>
       </div>
       <div class="stack-item-head">
         <h3 class="stack-item-title">${index + 1}. ${escapeHtml(operation.label)}</h3>
       </div>
       <p class="stack-item-summary">${escapeHtml(summarizeOperation(operation))}</p>
       <div class="stack-item-actions">
-        <button type="button" class="chip-button" data-action="toggle" data-id="${operation.id}">${toggleLabel}</button>
         <button type="button" class="chip-button" data-action="move-up" data-id="${operation.id}">上へ</button>
         <button type="button" class="chip-button" data-action="move-down" data-id="${operation.id}">下へ</button>
         <button type="button" class="chip-button" data-action="remove" data-id="${operation.id}">削除</button>
@@ -307,31 +367,81 @@ function renderStackItem(operation, index) {
 }
 
 function recompute() {
-  const { output, errors } = runOperations(refs.beforeText.value, state.operations);
+  const { output, errors, highlights } = runOperations(refs.beforeText.value, state.operations);
   state.errors = errors;
-  refs.afterText.value = output;
+  state.outputText = output;
+  renderAfterText(output, highlights);
   refs.beforeStats.textContent = formatStats(refs.beforeText.value);
   refs.afterStats.textContent = formatStats(output);
   renderStack();
 }
 
+function toggleEditorLayout() {
+  state.editorLayout = state.editorLayout === "vertical" ? "horizontal" : "vertical";
+  applyEditorLayout();
+}
+
+function applyEditorLayout() {
+  const isVertical = state.editorLayout === "vertical";
+  refs.previewPanel.classList.toggle("is-horizontal", !isVertical);
+  refs.layoutToggleButton.textContent = isVertical ? "左右表示に切替" : "上下表示に切替";
+}
+
+function applyWorkspaceWidth() {
+  refs.workspace.style.setProperty("--workspace-left", `${state.leftWidthPercent}%`);
+}
+
+function startWorkspaceResize(event) {
+  if (window.innerWidth <= 980) {
+    return;
+  }
+
+  event.preventDefault();
+  refs.workspaceResizer.setPointerCapture(event.pointerId);
+
+  const handleMove = (moveEvent) => {
+    const bounds = refs.workspace.getBoundingClientRect();
+    const nextPercent = ((moveEvent.clientX - bounds.left) / bounds.width) * 100;
+    state.leftWidthPercent = Math.max(20, Math.min(50, nextPercent));
+    applyWorkspaceWidth();
+  };
+
+  const handleUp = () => {
+    refs.workspaceResizer.removeEventListener("pointermove", handleMove);
+    refs.workspaceResizer.removeEventListener("pointerup", handleUp);
+    refs.workspaceResizer.removeEventListener("pointercancel", handleUp);
+  };
+
+  refs.workspaceResizer.addEventListener("pointermove", handleMove);
+  refs.workspaceResizer.addEventListener("pointerup", handleUp);
+  refs.workspaceResizer.addEventListener("pointercancel", handleUp);
+}
+
 async function copyAfterText() {
-  const text = refs.afterText.value;
+  const text = state.outputText;
 
   try {
     if (navigator.clipboard && window.isSecureContext) {
       await navigator.clipboard.writeText(text);
     } else {
-      refs.afterText.focus();
-      refs.afterText.select();
+      selectAfterText();
       document.execCommand("copy");
-      refs.afterText.setSelectionRange(0, 0);
+      window.getSelection().removeAllRanges();
       refs.beforeText.focus();
     }
     setCopyFeedback("after をコピーしました。", true);
   } catch (error) {
     setCopyFeedback("コピーに失敗しました。", false);
   }
+}
+
+function selectAfterText() {
+  refs.afterText.focus();
+  const selection = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(refs.afterText);
+  selection.removeAllRanges();
+  selection.addRange(range);
 }
 
 function setCopyFeedback(message, isSuccess) {
@@ -344,6 +454,38 @@ function setCopyFeedback(message, isSuccess) {
     refs.copyFeedback.textContent = "";
     refs.copyFeedback.classList.remove("is-success", "is-error");
   }, 2400);
+}
+
+function renderAfterText(text, highlights) {
+  refs.afterText.classList.toggle("is-empty", text.length === 0);
+
+  if (!text.length) {
+    refs.afterText.innerHTML = "";
+    return;
+  }
+
+  if (!highlights || !highlights.length) {
+    refs.afterText.textContent = text;
+    return;
+  }
+
+  const fragments = [];
+  let cursor = 0;
+
+  highlights.forEach((highlight) => {
+    if (highlight.start > cursor) {
+      fragments.push(escapeHtml(text.slice(cursor, highlight.start)));
+    }
+
+    fragments.push(`<mark class="search-hit">${escapeHtml(text.slice(highlight.start, highlight.end))}</mark>`);
+    cursor = highlight.end;
+  });
+
+  if (cursor < text.length) {
+    fragments.push(escapeHtml(text.slice(cursor)));
+  }
+
+  refs.afterText.innerHTML = fragments.join("");
 }
 
 function createId() {
