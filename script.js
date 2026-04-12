@@ -27,7 +27,6 @@ const refs = {
   layoutToggleButton: document.getElementById("layoutToggleButton"),
   previewPanel: document.querySelector(".preview-panel"),
   workspace: document.querySelector(".workspace"),
-  workflowColumn: document.querySelector(".workflow-column"),
   workspaceResizer: document.getElementById("workspaceResizer"),
 };
 
