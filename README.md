@@ -1,10 +1,10 @@
-# Text Processing Pipeline
+# TPP-web (Text Pipeline Processing Web)
 
-Text Processing Pipeline は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
+TPP-web (Text Pipeline Processing Web) は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
 
 ## Page
 
-- [Text Processing Pipeline Page](https://kanko-tech.github.io/text-processing-pipeline/)
+- [TPP-web Page](https://kanko-tech.github.io/text-pipeline-processing-web/)
 
 ## できること
 
