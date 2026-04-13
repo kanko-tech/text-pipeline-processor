@@ -6,35 +6,43 @@
     regex: "正規表現",
   };
 
+  const REGEX_FLAG_OPTIONS = [
+    { value: "g", label: "g: 文字列全体で見つかったすべての一致箇所を対象にする" },
+    { value: "i", label: "i: アルファベットの大文字・小文字を区別せずに扱う" },
+    { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を行単位で扱う" },
+    { value: "s", label: "s: 改行をまたいだ文字列も 1 つながりとして扱う" },
+    { value: "u", label: "u: 日本語や記号を含む文字列を安定して扱う" },
+  ];
+
   const OPERATIONS = {
     delete: [
       {
         type: "trimLineEdges",
-        label: "各行の前後空白を削除",
-        description: "行頭と行末の半角スペースとタブを削除します。",
+        label: "行頭・行末の空白を削除",
+        description: "各行の先頭と末尾にある半角スペースとタブを削除します。",
         fields: [],
       },
       {
         type: "removeBlankLines",
         label: "空行を削除",
-        description: "空白だけの行も含めて取り除きます。",
+        description: "空白だけの行も含めて空行を削除します。",
         fields: [],
       },
       {
         type: "removeText",
         label: "指定文字列を削除",
-        description: "一致した文字列を削除します。",
+        description: "入力した文字列を削除します。",
         fields: [
           {
             name: "target",
             label: "削除する文字列",
             input: "text",
-            placeholder: "例：foo",
+            placeholder: "例: foo",
             defaultValue: "",
           },
           {
             name: "mode",
-            label: "削除回数",
+            label: "削除範囲",
             input: "select",
             defaultValue: "all",
             options: [
@@ -73,14 +81,14 @@
             name: "find",
             label: "検索文字列",
             input: "text",
-            placeholder: "例：foo",
+            placeholder: "例: foo",
             defaultValue: "",
           },
           {
             name: "replaceWith",
             label: "置換後",
             input: "text",
-            placeholder: "例：bar",
+            placeholder: "例: bar",
             defaultValue: "",
           },
           {
@@ -110,7 +118,7 @@
             name: "replaceWith",
             label: "置換後",
             input: "text",
-            placeholder: "例：/",
+            placeholder: "例: ,",
             defaultValue: "",
             span: 2,
           },
@@ -132,14 +140,14 @@
       },
       {
         type: "normalizeNewlines",
-        label: "改行コードをLFに統一",
+        label: "改行コードを LF に統一",
         description: "CRLF / CR を LF に変換します。",
         fields: [],
       },
       {
         type: "tabsToSpaces",
-        label: "タブをスペースへ変換",
-        description: "タブを指定数の半角スペースに変換します。",
+        label: "タブをスペースに変換",
+        description: "タブを指定した数の半角スペースに変換します。",
         fields: [
           {
             name: "count",
@@ -153,14 +161,14 @@
       },
       {
         type: "toFullWidthAscii",
-        label: "英数字・記号を全角化",
-        description: "半角 ASCII を全角へ変換します。",
+        label: "半角英数・記号を全角化",
+        description: "半角の ASCII 文字を全角へ変換します。",
         fields: [],
       },
       {
         type: "toHalfWidthAscii",
-        label: "英数字・記号を半角化",
-        description: "全角 ASCII を半角へ変換します。",
+        label: "全角英数・記号を半角化",
+        description: "全角の ASCII 相当文字を半角へ変換します。",
         fields: [],
       },
     ],
@@ -168,13 +176,13 @@
       {
         type: "regexSearch",
         label: "検索",
-        description: "一致した文字を処理結果内で見つけやすく表示します。",
+        description: "一致した文字列を変換結果欄で見つけやすく表示します。",
         fields: [
           {
             name: "pattern",
             label: "パターン",
             input: "text",
-            placeholder: "例：\\d+",
+            placeholder: "例: \\d+",
             defaultValue: "",
             span: 2,
           },
@@ -184,13 +192,7 @@
             input: "multi-checkbox",
             defaultValue: ["g"],
             span: 2,
-            options: [
-              { value: "g", label: "g: 文中で見つかった一致箇所をすべて探す" },
-              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
-              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
-              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
-              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
-            ],
+            options: REGEX_FLAG_OPTIONS,
           },
         ],
       },
@@ -203,7 +205,7 @@
             name: "pattern",
             label: "パターン",
             input: "text",
-            placeholder: "例：<[^>]+>",
+            placeholder: "例: [^>]+>",
             defaultValue: "",
             span: 2,
           },
@@ -213,13 +215,7 @@
             input: "multi-checkbox",
             defaultValue: ["g"],
             span: 2,
-            options: [
-              { value: "g", label: "g: 文中で見つかったすべての一致箇所を削除する" },
-              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
-              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
-              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
-              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
-            ],
+            options: REGEX_FLAG_OPTIONS,
           },
         ],
       },
@@ -232,7 +228,7 @@
             name: "pattern",
             label: "パターン",
             input: "text",
-            placeholder: "例：\\d+",
+            placeholder: "例: \\d+",
             defaultValue: "",
             span: 2,
           },
@@ -240,7 +236,7 @@
             name: "replaceWith",
             label: "置換後",
             input: "text",
-            placeholder: "例：[number]",
+            placeholder: "例: [number]",
             defaultValue: "",
             span: 2,
           },
@@ -250,13 +246,7 @@
             input: "multi-checkbox",
             defaultValue: ["g"],
             span: 2,
-            options: [
-              { value: "g", label: "g: 文中で見つかったすべての一致箇所を置換する" },
-              { value: "i", label: "i: アルファベットの大文字小文字を区別せずに探す" },
-              { value: "m", label: "m: 複数行テキストで各行の先頭・末尾を判定できるようにする" },
-              { value: "s", label: "s: 改行をまたいだ文章も 1 つながりとして一致させる" },
-              { value: "u", label: "u: 日本語や記号を含む文字を安定して扱いやすくする" },
-            ],
+            options: REGEX_FLAG_OPTIONS,
           },
         ],
       },
@@ -396,11 +386,11 @@
       case "regexSearch":
         return `/${values.pattern || ""}/${values.flags || ""} に一致する部分を強調表示`;
       case "removeText":
-        return `${safePreview(values.target)} を削除 / ${values.mode === "first" ? "最初だけ" : "すべて"} / ${values.caseSensitive ? "大小区別あり" : "大小区別なし"}`;
+        return `${safePreview(values.target)} を削除 / ${values.mode === "first" ? "最初だけ" : "すべて"} / ${values.caseSensitive ? "大文字小文字を区別" : "大文字小文字を無視"}`;
       case "simpleReplace":
-        return `${safePreview(values.find)} -> ${safePreview(values.replaceWith)} / ${values.mode === "first" ? "最初だけ" : "すべて"} / ${values.caseSensitive ? "大小区別あり" : "大小区別なし"}`;
+        return `${safePreview(values.find)} -> ${safePreview(values.replaceWith)} / ${values.mode === "first" ? "最初だけ" : "すべて"} / ${values.caseSensitive ? "大文字小文字を区別" : "大文字小文字を無視"}`;
       case "replaceLineBreaks":
-        return `\\n -> ${safePreview(values.replaceWith)}`;
+        return `改行 -> ${safePreview(values.replaceWith)}`;
       case "tabsToSpaces":
         return `tab -> ${Number(values.count) || 1} spaces`;
       case "regexReplace":

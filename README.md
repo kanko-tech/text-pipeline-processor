@@ -1,10 +1,10 @@
-# Text Pipeline Processors
+# Text Pipeline Processor
 
-Text Pipeline Processors は、ブラウザだけで使える静的なテキスト整形ツールです。入力テキストに複数の処理を積み重ねて、変換結果をその場で確認できます。
+Text Pipeline Processor は、ブラウザだけで使える静的なテキスト整形ツールです。入力テキストに複数の処理を積み重ねて、変換結果をその場で確認できます。
 
 ## Page
 
-- [Text Pipeline Processors Page](https://kanko-tech.github.io/text-pipeline-processors/)
+- [Text Pipeline Processor Page](https://kanko-tech.github.io/text-pipeline-processor/)
 
 ## できること
 

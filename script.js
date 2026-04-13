@@ -311,12 +311,12 @@ function swapOperations(a, b) {
 }
 
 function renderStack() {
-  refs.stackMeta.textContent = `${state.operations.length} 個の処理`;
+  refs.stackMeta.textContent = `${state.operations.length} 件の処理`;
 
   const errorCount = Object.keys(state.errors).length;
   if (errorCount > 0) {
     refs.errorMeta.hidden = false;
-    refs.errorMeta.textContent = `${errorCount} 件の処理でエラーがあります。該当の処理はスキップしています。`;
+    refs.errorMeta.textContent = `${errorCount} 件の処理でエラーがあります。該当の処理を確認してください。`;
   } else {
     refs.errorMeta.hidden = true;
   }
@@ -383,7 +383,7 @@ function toggleEditorLayout() {
 function applyEditorLayout() {
   const isVertical = state.editorLayout === "vertical";
   refs.previewPanel.classList.toggle("is-horizontal", !isVertical);
-  refs.layoutToggleButton.textContent = isVertical ? "左右表示に切替" : "上下表示に切替";
+  refs.layoutToggleButton.textContent = isVertical ? "左右表示に切り替え" : "上下表示に切り替え";
 }
 
 function applyWorkspaceWidth() {
