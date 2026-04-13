@@ -1,44 +1,26 @@
-# TPP-web (Text Pipeline Processing Web)
+# Text Pipeline Processors
 
-TPP-web (Text Pipeline Processing Web) は、ブラウザだけで使える静的なテキスト整形ツールです。まずは下のページから利用できます。
+Text Pipeline Processors は、ブラウザだけで使える静的なテキスト整形ツールです。入力テキストに複数の処理を積み重ねて、変換結果をその場で確認できます。
 
 ## Page
 
-- [TPP-web Page](https://kanko-tech.github.io/text-pipeline-processing-web/)
+- [Text Pipeline Processors Page](https://kanko-tech.github.io/text-pipeline-processors/)
 
 ## できること
 
-- 処理をカテゴリ別に追加して順番に適用
-- スタックの並び替え
-- 処理の有効化 / 無効化
-- `before` と `after` のリアルタイム比較
-- 変換結果のコピー
-- エラーがある処理をスキップして継続実行
+- 処理をカテゴリ別に選んでスタックへ追加
+- `before` と `after` を並べて結果を確認
+- 複数の整形処理を順番に適用
+- 出力結果をコピー
 
 ## 主な処理
 
-### 削除系
+- 文字種変換
+- 記号・区切り文字の整形
+- 改行や空白の調整
+- 正規表現ベースの変換
 
-- 各行の前後空白を削除
-- 空行を削除
-- 指定文字列を削除
-- 半角スペースを削除
-- タブを削除
+## ローカルテスト
 
-### 置換系
-
-- 単純置換
-- 改行を任意の文字列へ置換
-
-### 変換系
-
-- 英字を大文字化
-- 英字を小文字化
-- 改行コードを LF に統一
-- タブをスペースへ変換
-- 英数字・記号の全角化 / 半角化
-
-### 正規表現系
-
-- 正規表現置換
-- 正規表現で削除
+- `tests/operations.html`
+- `tests/run-operations.ps1`

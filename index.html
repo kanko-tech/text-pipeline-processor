@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TPP-web (Text Pipeline Processing Web) | テキスト整形ツール</title>
+  <title>Text Pipeline Processors | テキスト整形ツール</title>
   <meta
     name="description"
     content="Static text formatting tool for GitHub Pages."
@@ -18,15 +18,15 @@
     <header class="hero">
       <div class="position-strip" aria-label="Page position">
         <span class="position-chip">Tool Box</span>
-        <span class="position-chip current">TPP-web</span>
+        <span class="position-chip current">Text Pipeline Processors</span>
       </div>
 
       <div class="hero-layout">
         <div class="hero-copy">
           <p class="eyebrow">WEB TOOL</p>
-          <h1>TPP-web</h1>
-          <p class="hero-subline">Text Pipeline Processing Web</p>
-          <p class="hero-lead">任意のテキスト処理をスタックに追加した順に適用できます。</p>
+          <h1>Text Pipeline Processors</h1>
+          <p class="hero-subline">Text Pipeline Processors</p>
+          <p class="hero-lead">複数のテキスト処理をスタックして、ブラウザ上で変換結果をすばやく確認できます。</p>
         </div>
       </div>
     </header>
@@ -37,7 +37,7 @@
           <div class="panel-head">
             <h2 id="composer-title">処理の追加</h2>
           </div>
-          <p class="panel-caption">処理を選択して下のスタックに追加しましょう。</p>
+          <p class="panel-caption">カテゴリと処理を選んで、変換スタックへ追加します。</p>
 
           <form id="composerForm" class="composer-form">
             <label class="field">
@@ -63,8 +63,8 @@
             <h2 id="stack-title">処理スタック</h2>
           </div>
           <div class="stack-summary">
-            <p id="stackMeta">0 個の処理</p>
-            <p id="errorMeta" class="error-meta" hidden>エラーはありません。</p>
+            <p id="stackMeta">0 件の処理</p>
+            <p id="errorMeta" class="error-meta" hidden>エラーがあります。</p>
           </div>
 
           <ol id="stackList" class="stack-list" aria-live="polite"></ol>
@@ -79,7 +79,7 @@
       <section class="panel preview-panel io-column" aria-labelledby="preview-title">
         <div class="panel-head">
           <h2 id="preview-title">テキスト入出力</h2>
-          <button type="button" id="layoutToggleButton" class="ghost-button">左右表示に切替</button>
+          <button type="button" id="layoutToggleButton" class="ghost-button">横並び表示に切り替え</button>
         </div>
 
         <div class="editor-grid">
@@ -95,7 +95,7 @@
             <textarea
               id="beforeText"
               class="editor"
-              placeholder="ここに元のテキストを入力してください"
+              placeholder="ここに変換前のテキストを入力してください"
             ></textarea>
           </section>
 
@@ -114,7 +114,7 @@
               role="textbox"
               aria-readonly="true"
               tabindex="0"
-              data-placeholder="処理後のテキストがここに表示されます"
+              data-placeholder="変換後のテキストがここに表示されます"
             ></div>
             <p id="copyFeedback" class="copy-feedback" aria-live="polite"></p>
           </section>
@@ -126,10 +126,10 @@
   <footer class="site-footer">
     <div class="footer-link-block">
       <div class="inline-link-list">
-        <a href="https://github.com/kanko-tech/text-pipeline-processing-web" target="_blank" rel="noreferrer">GitHub<small>text-pipeline-processing-web のリポジトリ</small></a>
+        <a href="https://github.com/kanko-tech/text-pipeline-processors" target="_blank" rel="noreferrer">GitHub<small>text-pipeline-processors のリポジトリ</small></a>
       </div>
     </div>
-    <p class="footer-title"><strong>kanko-techのツールボックス</strong></p>
+    <p class="footer-title"><strong>kanko-tech のツールボックス</strong></p>
     <p>Copyright &copy; 2026 kanko-tech All Rights Reserved.</p>
   </footer>
 
